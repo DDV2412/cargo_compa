@@ -9,11 +9,7 @@ const Home = () => {
 
   useEffect(() => {
     if (status === "loading") return;
-    if (!session?.user) {
-      router.push("/sign-in");
-    } else {
-      router.push("/dashboard");
-    }
+    router.push("/dashboard");
   }, [router, session, status]);
 
   if (status === "loading") return null;
