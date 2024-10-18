@@ -1,0 +1,83 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserAccess {
+  ADMIN
+  STAFF
+}
+
+model User {
+  id            Int          @id @default(autoincrement())
+  name          String?
+  email         String?         @unique
+  emailVerified DateTime?
+  phoneNumber   String?
+  image         String?
+  lastActive    DateTime?  @default(now())
+  acceptedDate  DateTime?
+  role          UserAccess  @default(STAFF)
+  accounts      Account[]
+  password      String
+  remember      Boolean @default(false)
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+ 
+model Account {
+  id            Int          @id @default(autoincrement())
+  userId                   Int  @unique
+  type                     String
+  provider                 String
+  providerAccountId        String
+  refresh_token            String? @db.Text
+  access_token             String? @db.Text
+  expires_at               Int?
+  token_type               String?
+  scope                    String?
+  id_token                 String? @db.Text
+  session_state            String?
+  refresh_token_expires_in Int?
+  user                     User?   @relation(fields: [userId], references: [id])
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+ 
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+
+  @@map("accounts")
+}
+ 
+model VerificationToken {
+  email String
+  token      String @db.Text
+  expires    DateTime
+ 
+  @@unique([email])
+
+  @@map("verification_token")
+}
+
+model ResetToken{
+  token      String
+  email         String @unique
+  expires       DateTime
+
+  @@map("reset_token")
+}
+ 
