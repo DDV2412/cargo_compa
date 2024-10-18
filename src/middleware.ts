@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const allowedOrigins = [process.env.NEXTAUTH_URL];
-
 const protectedPaths = ["/shipments", "/settings", "/dashboard"];
 
 const corsOptions = {
@@ -11,19 +9,11 @@ const corsOptions = {
 };
 
 export async function middleware(request: NextRequest) {
-  const origin = request.headers.get("origin") ?? "";
-  const isAllowedOrigin = allowedOrigins.includes(origin);
-
-  if (origin === "*") {
-    return NextResponse.json({ error: "Invalid origin" }, { status: 403 });
-  }
-
   const isPreflight = request.method === "OPTIONS";
   const token = request.cookies.get("next-auth.session-token");
 
   if (isPreflight) {
     const preflightHeaders = {
-      ...(isAllowedOrigin && { "Access-Control-Allow-Origin": origin }),
       ...corsOptions,
     };
     return NextResponse.json({}, { headers: preflightHeaders });
