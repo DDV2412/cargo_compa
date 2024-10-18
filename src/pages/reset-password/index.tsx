@@ -9,6 +9,7 @@ import Button from "@/components/button";
 import { resetPasswordSchema } from "@/lib/yup";
 import { useRouter } from "next/router";
 import Loading from "@/components/loading";
+import Head from "next/head";
 
 const ResetPassword = () => {
   const [status, setStatus] = React.useState(false);
@@ -51,6 +52,10 @@ const ResetPassword = () => {
   });
   return (
     <div className="grid lg:grid-cols-2 min-h-screen lg:overflow-hidden">
+      <Head>
+        <title>Reset Password</title>
+        <meta name="description" content="Reset password page for CargoCompa" />
+      </Head>
       <div className="flex h-full flex-col py-12 px-4 md:px-10 lg:pl-20 justify-start gap-20">
         {loading && <Loading />}
         <Image src={Logo} alt="CargoCompa" width={300} height={48} />

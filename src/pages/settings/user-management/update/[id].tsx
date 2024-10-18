@@ -15,6 +15,7 @@ import {
 } from "@/lib/slice/userSlice";
 import { updateProfileSchema } from "@/lib/yup";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 const UpdateUser = () => {
   const { user, loading } = useSelector((state: RootState) => state.user);
@@ -95,6 +96,10 @@ const UpdateUser = () => {
 
   return (
     <>
+      <Head>
+        <title>Update User</title>
+        <meta name="description" content="Update user page for CargoCompa" />
+      </Head>
       {loading && <Loading />}
       <div className="flex flex-col gap-5">
         <div className="flex gap-2 justify-between flex-wrap items-center">

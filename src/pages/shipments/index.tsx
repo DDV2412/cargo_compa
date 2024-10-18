@@ -1,6 +1,7 @@
 import Table, { TableConfigProps } from "@/components/table";
 import MainLayout from "@/layouts/main";
 import { IconCalendarDue, IconSortDescending } from "@tabler/icons-react";
+import Head from "next/head";
 import React from "react";
 
 const Shipments = () => {
@@ -38,6 +39,10 @@ const Shipments = () => {
   ];
   return (
     <>
+      <Head>
+        <title>Shipments</title>
+        <meta name="description" content="Shipments page for CargoCompa" />
+      </Head>
       <div className="w-full">
         <div className="flex flex-col gap-6 py-7 px-6 border border-neutral-300 rounded-3xl">
           <div className="flex justify-between">

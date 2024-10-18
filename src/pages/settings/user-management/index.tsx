@@ -24,6 +24,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Loading from "@/components/loading";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 const UserManagement = () => {
   const { users, user, loading } = useSelector(
@@ -267,6 +268,13 @@ const UserManagement = () => {
   }, [dispatch, router, user]);
   return (
     <>
+      <Head>
+        <title>User Management</title>
+        <meta
+          name="description"
+          content="User management page for CargoCompa"
+        />
+      </Head>
       {loading && <Loading />}
       <div className="flex flex-col gap-5">
         <div className="flex gap-2 justify-between flex-wrap items-center">

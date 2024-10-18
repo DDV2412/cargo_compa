@@ -10,6 +10,7 @@ import {
   IconPointFilled,
 } from "@tabler/icons-react";
 import Avatar from "@/components/avatar";
+import Head from "next/head";
 
 const Shipments = () => {
   const tableConfig: TableConfigProps[] = [
@@ -46,6 +47,10 @@ const Shipments = () => {
   ];
   return (
     <>
+      <Head>
+        <title>Shipments</title>
+        <meta name="description" content="Shipments page for CargoCompa" />
+      </Head>
       <div className="w-full">
         <Table tableConfig={tableConfig} rows={[]} />
 

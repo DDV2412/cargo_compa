@@ -11,6 +11,7 @@ import Image from "next/image";
 import Loading from "@/components/loading";
 import { useFormik } from "formik";
 import { updateProfileSchema } from "@/lib/yup";
+import Head from "next/head";
 
 const Profile = () => {
   const [loading, setLoading] = React.useState(false);
@@ -121,6 +122,10 @@ const Profile = () => {
 
   return (
     <>
+      <Head>
+        <title>Profile</title>
+        <meta name="description" content="Profile page for CargoCompa" />
+      </Head>
       <div className="p-8 rounded-3xl border border-neutral-300">
         {loading && <Loading />}
         <div className="w-full flex flex-col gap-5">

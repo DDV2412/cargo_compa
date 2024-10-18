@@ -18,6 +18,7 @@ import {
   loadUserFailure,
 } from "@/lib/slice/userSlice";
 import Loading from "@/components/loading";
+import Head from "next/head";
 
 const SignUp = () => {
   const [loading, setLoading] = React.useState(false);
@@ -104,6 +105,10 @@ const SignUp = () => {
 
   return (
     <div className="grid lg:grid-cols-2 min-h-screen">
+      <Head>
+        <title>Sign Up</title>
+        <meta name="description" content="Sign up page for CargoCompa" />
+      </Head>
       <div className="flex h-full flex-col py-12 px-4 md:px-10 lg:pl-20 justify-between gap-12">
         {loading && <Loading />}
         <Image src={Logo} alt="CargoCompa" width={300} height={48} />

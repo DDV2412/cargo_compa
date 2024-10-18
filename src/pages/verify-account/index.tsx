@@ -4,6 +4,7 @@ import React, { useEffect } from "react";
 import Logo from "../../assets/images/Logo.png";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
+import Head from "next/head";
 
 const VerifyNotif = () => {
   const router = useRouter();
@@ -43,6 +44,10 @@ const VerifyNotif = () => {
 
   return (
     <div className="min-h-screen lg:overflow-hidden">
+      <Head>
+        <title>Verify Account</title>
+        <meta name="description" content="Verify account page for CargoCompa" />
+      </Head>
       <div className="flex h-full flex-col py-12 px-4 md:px-10 lg:pl-20 justify-between gap-12">
         <Image src={Logo} alt="CargoCompa" width={300} height={48} />
         <div className="h-full w-full flex flex-col justify-center items-center">

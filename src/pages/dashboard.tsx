@@ -7,6 +7,7 @@ import {
   IconTruck,
 } from "@tabler/icons-react";
 import { User } from "next-auth";
+import Head from "next/head";
 import React from "react";
 import { useSelector } from "react-redux";
 
@@ -47,6 +48,10 @@ const Home = () => {
   ];
   return (
     <>
+      <Head>
+        <title>Dashboard</title>
+        <meta name="description" content="Dashboard page for CargoCompa" />
+      </Head>
       {user?.acceptedDate === null && user?.role !== "ADMIN" ? (
         <div className="flex justify-start">
           <h2 className="text-xl font-medium text-neutral-500">

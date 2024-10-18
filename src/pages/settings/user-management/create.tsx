@@ -15,6 +15,7 @@ import {
 } from "@/lib/slice/userSlice";
 import { createUsersSchema } from "@/lib/yup";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 const CreateUser = () => {
   const { user, loading } = useSelector((state: RootState) => state.user);
@@ -67,6 +68,10 @@ const CreateUser = () => {
 
   return (
     <>
+      <Head>
+        <title>Create User</title>
+        <meta name="description" content="Create user page for CargoCompa" />
+      </Head>
       {loading && <Loading />}
       <div className="flex flex-col gap-5">
         <div className="flex gap-2 justify-between flex-wrap items-center">
