@@ -45,6 +45,7 @@ const UserManagement = () => {
 
   const handleDeleteUser = async (id: string) => {
     if (user) {
+      dispatch(deleteUserStart());
       try {
         const response = await fetch(`/api/user/delete/${id}`, {
           method: "DELETE",
@@ -56,13 +57,16 @@ const UserManagement = () => {
 
         const data = await response.json();
 
-        if (data.status === 200) {
-          dispatch(deleteUserStart());
-          dispatch(deleteUserSuccess({ id: id }));
+        if (response.ok && data.status === 200) {
+          dispatch(deleteUserSuccess({ id }));
           setDeleteUser({
             open: false,
             id: "",
           });
+
+          setFilteredData((prevData) =>
+            prevData.filter((user) => user.id !== id),
+          );
         }
       } catch (error) {
         console.error(error);
