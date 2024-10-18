@@ -43,14 +43,7 @@ handler.use(upload.single("image"));
 
 handler.post(async (req, res) => {
   const headersList = req.headers;
-  const referer = headersList.referer;
   const auth = headersList.authorization as string;
-
-  if (!referer || !referer.includes(`${process.env.NEXTAUTH_URL}`) || !auth) {
-    return res.status(401).json({
-      message: "Unauthorized access",
-    });
-  }
 
   const checkAuth = await decode({
     token: auth.split(" ")[1],

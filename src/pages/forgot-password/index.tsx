@@ -27,7 +27,6 @@ const ForgotPassword = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            referer: `${process.env.NEXTAUTH_URL}`,
           },
           body: JSON.stringify(values),
         });

@@ -40,7 +40,6 @@ const Sidebar = ({
           dispatch(loadUserStart());
           const response = await fetch(`/api/user/${session?.user?.id}`, {
             headers: {
-              referer: `${process.env.NEXTAUTH_URL}`,
               authorization: `Bearer ${session?.accessToken}`,
             },
           });

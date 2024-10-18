@@ -59,7 +59,6 @@ const SignIn = () => {
           dispatch(loadUserStart());
           const response = await fetch(`/api/user/${session?.data.user?.id}`, {
             headers: {
-              referer: `${process.env.NEXTAUTH_URL}`,
               authorization: `Bearer ${session?.data.accessToken}`,
             },
           });

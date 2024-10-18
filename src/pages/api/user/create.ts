@@ -8,10 +8,9 @@ export default async function handler(
   res: NextApiResponse,
 ) {
   const headersList = req.headers;
-  const referer = headersList.referer;
   const auth = headersList.authorization as string;
 
-  if (!referer || !referer.includes(`${process.env.NEXTAUTH_URL}`) || !auth) {
+  if (!auth) {
     return res.status(401).json({
       message: "Unauthorized access",
     });

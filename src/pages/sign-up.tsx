@@ -41,7 +41,6 @@ const SignUp = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            referer: `${process.env.NEXTAUTH_URL}`,
           },
           body: JSON.stringify(values),
         });
@@ -72,7 +71,6 @@ const SignUp = () => {
           dispatch(loadUserStart());
           const response = await fetch(`/api/user/${session?.data.user?.id}`, {
             headers: {
-              referer: `${process.env.NEXTAUTH_URL}`,
               authorization: `Bearer ${session?.data.accessToken}`,
             },
           });

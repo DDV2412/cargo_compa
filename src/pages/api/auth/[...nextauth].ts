@@ -37,7 +37,6 @@ export default NextAuth({
               body: JSON.stringify(userCredentials),
               headers: {
                 "Content-Type": "application/json",
-                referer: `${process.env.NEXTAUTH_URL}`,
               },
             },
           );
@@ -74,7 +73,6 @@ export default NextAuth({
             }),
             headers: {
               "Content-Type": "application/json",
-              referer: `${process.env.NEXTAUTH_URL}`,
             },
           },
         );

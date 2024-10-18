@@ -6,16 +6,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  const headersList = req.headers;
-  const referer = headersList.referer;
-
-  if (!referer || !referer.includes(`${process.env.NEXTAUTH_URL}`)) {
-    return res.json({
-      status: 401,
-      message: "Unauthorized access",
-    });
-  }
-
   if (req.method !== "POST") {
     return res.json({
       status: 405,

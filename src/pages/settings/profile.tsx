@@ -43,7 +43,6 @@ const Profile = () => {
       const userUpdate = await fetch(`/api/user/update/${user?.id}`, {
         method: "PATCH",
         headers: {
-          referer: `${process.env.NEXTAUTH_URL}`,
           authorization: `Bearer ${user?.accessToken}`,
           "Content-Type": "application/json",
         },
@@ -74,8 +73,8 @@ const Profile = () => {
       const response = await fetch("/api/upload", {
         method: "POST",
         headers: {
-          referer: `${process.env.NEXTAUTH_URL}`,
           authorization: `Bearer ${user?.accessToken}`,
+          "Content-Type": "application/json",
         },
         body: formData,
       });

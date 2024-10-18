@@ -39,7 +39,6 @@ const CreateUser = () => {
           headers: {
             "Content-Type": "application/json",
             authorization: `Bearer ${user?.accessToken}`,
-            referer: `${process.env.NEXTAUTH_URL}`,
           },
           body: JSON.stringify(values),
         });
