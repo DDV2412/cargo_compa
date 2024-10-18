@@ -1,8 +1,7 @@
-import { decode } from "next-auth/jwt";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const allowedOrigins = ["http://localhost:3000"];
+const allowedOrigins = [process.env.NEXTAUTH_URL];
 
 const protectedPaths = ["/shipments", "/settings", "/dashboard"];
 

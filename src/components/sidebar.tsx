@@ -61,8 +61,7 @@ const Sidebar = ({
       };
       getUser();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [dispatch, session]);
 
   return (
     <aside
