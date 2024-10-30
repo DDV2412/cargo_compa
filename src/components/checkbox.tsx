@@ -35,7 +35,7 @@ const Checkbox = ({
           onChange={onChange}
           disabled={disabled}
           checked={checked}
-          className={`w-4 h-4 border border-neutral-300 rounded-[4px] appearance-none checked:bg-[url('../images/check.svg')] bg-center bg-no-repeat bg-contain ${className}`}
+          className={`w-4 h-4 border border-neutral-300 rounded-[4px] appearance-none checked:bg-[url('/images/check.svg')] bg-center bg-no-repeat bg-contain ${className}`}
         />
         <label htmlFor={id} className={`block text-sm font-medium`}>
           {label}
