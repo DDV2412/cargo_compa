@@ -24,30 +24,32 @@ const Header = ({
         <button className="flex lg:hidden" onClick={toggleSidebar}>
           <IconMenu2 size="24" />
         </button>
-        <div className="hidden lg:block">
-          <h1 className="text-3xl font-semibold">
-            {route.pathname.startsWith("/shipments/")
-              ? "Monitoring"
-              : route.pathname.startsWith("/settings/user-management")
-              ? "User management"
-              : route.pathname === "/settings/profile"
-              ? "Profile"
-              : route.pathname === "/"
-              ? "Dashboard"
-              : route.pathname.replace("/", "").charAt(0).toUpperCase() +
-                route.pathname.slice(2).toLowerCase()}
-          </h1>
-          {(route.pathname === "/" && (
-            <p className="text-neutral-500 mt-1">
-              Welcome back, {user?.name ?? "Cargo Compa"} !
-            </p>
-          )) ||
-            (route.pathname.startsWith("/settings") && (
+        {user && user.role !== "ADMIN" && user.acceptedDate !== null && (
+          <div className="hidden lg:block">
+            <h1 className="text-3xl font-semibold">
+              {route.pathname.startsWith("/shipments/")
+                ? "Monitoring"
+                : route.pathname.startsWith("/settings/user-management")
+                ? "User management"
+                : route.pathname === "/settings/profile"
+                ? "Profile"
+                : route.pathname === "/"
+                ? "Dashboard"
+                : route.pathname.replace("/", "").charAt(0).toUpperCase() +
+                  route.pathname.slice(2).toLowerCase()}
+            </h1>
+            {(route.pathname === "/" && (
               <p className="text-neutral-500 mt-1">
-                Manage your team members and their account permissions here.
+                Welcome back, {user?.name ?? "Cargo Compa"} !
               </p>
-            ))}
-        </div>
+            )) ||
+              (route.pathname.startsWith("/settings") && (
+                <p className="text-neutral-500 mt-1">
+                  Manage your team members and their account permissions here.
+                </p>
+              ))}
+          </div>
+        )}
       </div>
       {route.pathname === "/" ? (
         <div className="flex justify-end items-center gap-6">

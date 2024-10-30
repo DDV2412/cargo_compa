@@ -10,7 +10,7 @@ const corsOptions = {
 
 export async function middleware(request: NextRequest) {
   const isPreflight = request.method === "OPTIONS";
-  const token = request.cookies.get("__Secure-next-auth.session-token");
+  const token = request.cookies.get("next-auth.session-token");
 
   if (isPreflight) {
     const preflightHeaders = {
@@ -43,6 +43,7 @@ export const config = {
     "/forgot-password",
     "/reset-password",
     "/404",
+    "/",
   ],
   matcher: [
     "/((?!api|_next/static|_next/image|favicon.ico|robots.txt|images/.*|_next/static/media).*)",

@@ -10,6 +10,7 @@ async function main() {
       name: "Admin",
       password: bcrypt.hashSync("cargoDev@24", 12),
       role: "ADMIN",
+      acceptedDate: new Date(),
     },
   });
 }

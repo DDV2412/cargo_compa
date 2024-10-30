@@ -70,11 +70,10 @@ const Profile = () => {
       const formData = new FormData();
       formData.append("image", file);
 
-      const response = await fetch("/api/upload", {
+      const response = await fetch("/api/upload-image", {
         method: "POST",
         headers: {
           authorization: `Bearer ${user?.accessToken}`,
-          "Content-Type": "application/json",
         },
         body: formData,
       });

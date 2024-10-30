@@ -99,4 +99,7 @@ export const userService = {
   forgotPasswordVerifyToken: async (tokenData: any) => {
     return await userRepo.forgotPasswordVerifyToken(tokenData);
   },
+  checkDocument: async (document: any) => {
+    return await userRepo.checkDocument(document);
+  },
 };

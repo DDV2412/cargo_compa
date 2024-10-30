@@ -205,4 +205,21 @@ export const userRepo = {
       throw new Error("Something went wrong");
     }
   },
+  checkDocument: async (document: any) => {
+    try {
+      const whereClause: { [key: string]: any } = {};
+
+      for (const key in document) {
+        if (document.hasOwnProperty(key)) {
+          whereClause[key] = document[key];
+        }
+      }
+
+      return await prisma.user.findFirst({
+        where: whereClause,
+      });
+    } catch (error) {
+      throw new Error("Something went wrong");
+    }
+  },
 };

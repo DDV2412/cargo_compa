@@ -1,7 +1,6 @@
 import { userService } from "@/server/service/userService";
 import { NextApiRequest, NextApiResponse } from "next";
 import { decode } from "next-auth/jwt";
-import bcrypt from "bcrypt";
 
 export default async function handler(
   req: NextApiRequest,
@@ -27,7 +26,7 @@ export default async function handler(
     });
   }
 
-  if (req.method !== "PATCH") {
+  if (req.method !== "POST") {
     return res.json({
       status: 405,
       message: "Method not allowed",
@@ -35,18 +34,20 @@ export default async function handler(
   }
 
   try {
-    const { id } = req.query;
     const body = req.body;
 
-    if (body.password && body.password.length > 0) {
-      body.password = await bcrypt.hash(body.password, 12);
-    }
+    const user = await userService.checkDocument(body);
 
-    const user = await userService.updateUser(parseInt(id as string), body);
+    if (!user) {
+      return res.json({
+        status: 404,
+        message: "User not found",
+      });
+    }
 
     return res.json({
       status: 200,
-      message: "User updated successfully",
+      message: "User fetch successfully",
       data: user,
     });
   } catch (error: any) {

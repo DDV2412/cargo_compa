@@ -103,3 +103,10 @@ export const createUsersSchema = yup.object().shape({
     .trim(),
   role: yup.string().required("Role is required"),
 });
+
+export const completeRegisterSchema = yup.object().shape({
+  vatNumber: yup.string().required("VAT number is required"),
+  eoriNumber: yup.string().required("EORI number is required"),
+  kboNumber: yup.string().required("KBO number is required"),
+  kboFile: yup.string().required("KBO file is required"),
+});
