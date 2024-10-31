@@ -46,6 +46,6 @@ export const config = {
     "/",
   ],
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|robots.txt|images/.*|_next/static/media).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|robots.txt|images/.*|document/.*|_next/static/media).*)",
   ],
 };
