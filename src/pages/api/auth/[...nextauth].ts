@@ -20,6 +20,7 @@ export default NextAuth({
       credentials: {
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
+        remember: { label: "Remember for 30 days", type: "checkbox" },
       },
       async authorize(credentials) {
         if (!credentials || !credentials.email || !credentials.password) {
@@ -29,6 +30,7 @@ export default NextAuth({
           const userCredentials = {
             email: credentials.email,
             password: credentials.password,
+            remember: credentials.remember,
           };
           const res = await fetch(
             `${process.env.NEXTAUTH_URL}/api/auth/sign-in`,

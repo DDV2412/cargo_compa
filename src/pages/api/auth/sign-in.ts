@@ -36,6 +36,7 @@ export default async function handler(
 
     await userService.updateUser(user.id, {
       lastActive: new Date(),
+      remember: body.remember,
     });
 
     return res.json({

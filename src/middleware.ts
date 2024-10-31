@@ -10,7 +10,7 @@ const corsOptions = {
 
 export async function middleware(request: NextRequest) {
   const isPreflight = request.method === "OPTIONS";
-  const token = request.cookies.get("__Secure-next-auth.session-token");
+  const token = request.cookies.get("next-auth.session-token");
 
   if (isPreflight) {
     const preflightHeaders = {

@@ -8,6 +8,7 @@ const nextConfig = {
   },
   publicRuntimeConfig: {
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+    KVK_API_KEY: process.env.KVK_API_KEY,
   },
   images: {
     remotePatterns: [

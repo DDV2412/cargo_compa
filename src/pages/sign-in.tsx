@@ -25,9 +25,10 @@ const SignIn = () => {
   const dispatch = useDispatch();
   const session = useSession();
   const router = useRouter();
-  const { user, error } = useSelector(
+  const { user } = useSelector(
     (state: { user: { user: User; error: string } }) => state.user,
   );
+  const [userError, setUserError] = React.useState("");
   const [loading, setLoading] = React.useState(false);
 
   const formik = useFormik({
@@ -36,14 +37,21 @@ const SignIn = () => {
       password: "",
       remember: false,
     },
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       setLoading(true);
       try {
-        signIn("credentials", {
+        const result = await signIn("credentials", {
+          redirect: false,
           email: values.email,
           password: values.password,
           remember: values.remember,
         });
+
+        if (result && result.status === 200) {
+          router.replace("/");
+        } else {
+          setUserError("Invalid email or password");
+        }
         setLoading(false);
       } catch (error: any) {
         console.error(error.message || "Something went wrong!");
@@ -108,13 +116,13 @@ const SignIn = () => {
               Welcome back! Please enter your details.
             </p>
 
-            {error && (
+            {userError && (
               <div
-                className="bg-red-100 border border-red-400 text-red-700 px-3 py-2 text-sm rounded relative mt-4"
+                className="bg-red-100 w-full border border-red-400 text-red-700 px-3 py-2 text-sm rounded relative mt-4"
                 role="alert"
               >
                 <strong className="font-bold">Error! </strong>
-                <span className="block sm:inline">{error}</span>
+                <span className="block sm:inline">{userError}</span>
               </div>
             )}
             <form
@@ -166,6 +174,7 @@ const SignIn = () => {
                 >
                   Sign In
                 </Button>
+
                 <Button
                   type={"button"}
                   style={"secondary"}

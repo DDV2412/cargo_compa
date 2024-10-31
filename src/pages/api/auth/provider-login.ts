@@ -54,6 +54,15 @@ export default async function handler(
       lastActive: new Date(),
     });
 
+    const password = await bcrypt.compare(body.user.id, checkUser.password);
+
+    if (!password) {
+      return res.json({
+        status: 401,
+        message: "Email or password is incorrect",
+      });
+    }
+
     return res.json({
       status: 200,
       message: "User created successfully",

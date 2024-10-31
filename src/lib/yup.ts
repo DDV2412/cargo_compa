@@ -12,24 +12,6 @@ export const signUpSchema = yup.object().shape({
     .matches(/[0-9]/, "Contain at least one number.")
     .matches(/[^a-zA-Z0-9]/, "Contain at least one special character.")
     .trim(),
-
-  confirmPassword: yup
-    .string()
-    .min(8, "Password must be at least 6 characters")
-    .required("Password is required")
-    .max(24, "Password must be less than 24 characters")
-    .matches(/[a-zA-Z]/, "Contain at least one letter.")
-    .matches(/[0-9]/, "Contain at least one number.")
-    .matches(/[^a-zA-Z0-9]/, "Contain at least one special character.")
-    .oneOf([yup.ref("password")], "Passwords must match")
-    .trim(),
-  country: yup.string().required("Country is required"),
-  city: yup.string().required("City is required"),
-  userRole: yup.string().required("Role is required"),
-  companyProfile: yup.object().shape({
-    companyName: yup.string().notRequired(),
-    companyAddress: yup.string().notRequired(),
-  }),
 });
 
 export const signInSchema = yup.object().shape({

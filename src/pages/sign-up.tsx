@@ -19,6 +19,7 @@ import {
 } from "@/lib/slice/userSlice";
 import Loading from "@/components/loading";
 import Head from "next/head";
+import { signUpSchema } from "@/lib/yup";
 
 const SignUp = () => {
   const [loading, setLoading] = React.useState(false);
@@ -34,6 +35,7 @@ const SignUp = () => {
       email: "",
       password: "",
     },
+    validationSchema: signUpSchema,
     onSubmit: async (values) => {
       setLoading(true);
       try {
@@ -140,6 +142,7 @@ const SignUp = () => {
                 onChange={(e) => {
                   formik.setFieldValue("name", e.target.value);
                 }}
+                error={formik.errors.name}
               />
               <TextField
                 ariaLabel={"Email"}
@@ -150,6 +153,7 @@ const SignUp = () => {
                 onChange={(e) => {
                   formik.setFieldValue("email", e.target.value);
                 }}
+                error={formik.errors.email}
               />
               <TextField
                 label="Password"
@@ -160,6 +164,7 @@ const SignUp = () => {
                 onChange={(e) => {
                   formik.setFieldValue("password", e.target.value);
                 }}
+                error={formik.errors.password}
               />
 
               <div className="w-full flex flex-col gap-4">

@@ -21,9 +21,11 @@ const Button = dynamic(() => import("../components/button"));
 const Home = () => {
   const [loading, setLoading] = React.useState(false);
   const dispatch = useDispatch();
+  const [naam, setNaam] = React.useState("");
   const { user } = useSelector(
     (state: { user: { user: UserPayload } }) => state.user,
   );
+  const [isErrors, setIsErrors] = React.useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -31,36 +33,52 @@ const Home = () => {
       eoriNumber: "",
       kboNumber: "",
       kboFile: null,
-      acceptedDate: new Date(),
+      address: "",
+      city: "",
+      country: "",
+      zip_code: "",
+      number: "",
+      countryCode: "",
+      street: "",
+      naam: "",
     },
     validationSchema: completeRegisterSchema,
-    validateOnChange: false,
-    onSubmit: async (values) => {
-      setLoading(true);
-      try {
-        const userUpdate = await fetch(`/api/user/update/${user?.id}`, {
-          method: "PATCH",
-          headers: {
-            authorization: `Bearer ${user?.accessToken}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(values),
-        });
-
-        const userData = await userUpdate.json();
-
-        dispatch(
-          loadUserSuccess({
-            user: userData.data,
-          }),
-        );
-        setLoading(false);
-      } catch (error: any) {
-        console.error(error.message || "Something went wrong!");
-        setLoading(false);
-      }
-    },
+    onSubmit: async (values) => {},
   });
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const errors = await formik.validateForm();
+
+    if (Object.keys(errors).length > 0) {
+      console.log("Form has errors:", errors);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const userUpdate = await fetch(`/api/user/complete-account/${user?.id}`, {
+        method: "POST",
+        headers: {
+          authorization: `Bearer ${user?.accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formik.values),
+      });
+
+      const userData = await userUpdate.json();
+
+      dispatch(
+        loadUserSuccess({
+          user: userData.data,
+        }),
+      );
+      setLoading(false);
+    } catch (error: any) {
+      console.error(error.message || "Something went wrong!");
+      setLoading(false);
+    }
+  };
 
   const handleUploadFile = async (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -81,7 +99,10 @@ const Home = () => {
       if (response.ok) {
         const data = await response.json();
 
-        formik.setFieldValue("kboFile", data.file.path);
+        formik.setFieldValue(
+          "kboFile",
+          `${process.env.NEXTAUTH_URL}${data.data.path}`,
+        );
       }
     } catch (error: any) {
       console.error(error.message || "Something went wrong!");
@@ -121,48 +142,205 @@ const Home = () => {
     },
   ];
 
-  useEffect(() => {
-    const fetchDocument = async (
-      label: string,
-      numberType: string,
-      numberValue: string,
-    ) => {
-      const response = await fetch("/api/user/check-document", {
-        method: "POST",
-        headers: {
-          authorization: `Bearer ${user?.accessToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ [numberType]: numberValue }),
-      });
+  const validateEoriNumber = (eoriNumber: string) => {
+    const upperChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    if (!eoriNumber) {
+      return false;
+    }
+    if (eoriNumber.includes(" ")) {
+      return false;
+    }
+    if (
+      eoriNumber.length < 3 ||
+      eoriNumber.length > 17 ||
+      !upperChars.includes(eoriNumber.charAt(0)) ||
+      !upperChars.includes(eoriNumber.charAt(1))
+    ) {
+      return false;
+    }
+    return true;
+  };
 
-      if (response.ok) {
-        const data = await response.json();
-        if (data.status === 200) {
-          formik.setErrors({
-            [numberType]: `This ${label} is already known to us. Try another one or login to the existing account.`,
-          } as any);
-        } else {
-          formik.setErrors({
-            [numberType]: null,
-          } as any);
+  useEffect(() => {
+    let errors = { ...formik.errors };
+
+    const validationVAT = async (numberValue: string) => {
+      try {
+        const response = await fetch(
+          `https://controleerbtwnummer.eu/api/validate/${numberValue}.json`,
+          {
+            method: "GET",
+          },
+        );
+
+        if (!response.ok) {
+          errors.vatNumber = "This VAT Number is not valid.";
+          return;
         }
+
+        const data = await response.json();
+
+        if (data.valid) {
+          formik.setFieldValue("countryCode", data.countryCode);
+          formik.setFieldValue("address", data.strAddress);
+          formik.setFieldValue("city", data.address.city);
+          formik.setFieldValue("country", data.address.country);
+          formik.setFieldValue("zip_code", data.address.zip_code);
+          formik.setFieldValue("number", data.address.number);
+          formik.setFieldValue("street", data.address.street);
+          errors.vatNumber = "";
+        } else {
+          errors.vatNumber = "This VAT Number is not valid.";
+          setIsErrors(true);
+        }
+      } catch (error) {
+        console.error("Error validating VAT:", error);
+        setIsErrors(true);
       }
     };
 
-    if (formik.values.vatNumber)
-      fetchDocument("VAT Number", "vatNumber", formik.values.vatNumber);
-    if (formik.values.eoriNumber)
-      fetchDocument("EORI Number", "eoriNumber", formik.values.eoriNumber);
-    if (formik.values.kboNumber)
-      fetchDocument(
-        "Commerce Number / KBO Number",
-        "kboNumber",
-        formik.values.kboNumber,
-      );
+    const checkEORI = async (numberValue: string) => {
+      try {
+        const response = await fetch("/api/validation/eori", {
+          method: "GET",
+        });
+
+        if (!response.ok) {
+          errors.eoriNumber = "This EORI Number is not valid.";
+          setIsErrors(true);
+          return;
+        }
+
+        const data = await response.json();
+
+        if (data.status === 200) {
+          const isValid = validateEoriNumber(numberValue);
+
+          if (isValid) {
+            errors.eoriNumber = "";
+          } else {
+            errors.eoriNumber = "This EORI Number is not valid.";
+            setIsErrors(true);
+          }
+        } else {
+          errors.eoriNumber = "This EORI Number is not valid.";
+          setIsErrors(true);
+        }
+      } catch (error) {
+        console.error("Error validating EORI:", error);
+        setIsErrors(true);
+      }
+    };
+
+    const checkKvkNumber = async (numberValue: string) => {
+      try {
+        const response = await fetch("/api/validation/kvkNumber", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ kvkNumber: numberValue }),
+        });
+
+        const data = await response.json();
+
+        if (data.status === 200) {
+          errors.kboNumber = "";
+          setNaam(data.data.naam);
+          formik.setFieldValue("naam", data.data.naam);
+        } else {
+          errors.kboNumber = "This KBO Number is not valid.";
+          setIsErrors(true);
+          setNaam("");
+        }
+      } catch (error) {
+        console.error("Error validating EORI:", error);
+        setIsErrors(true);
+      }
+    };
+
+    const fetchDocument = async (
+      label: string,
+      numberType: keyof typeof errors,
+      numberValue: string,
+    ) => {
+      try {
+        const response = await fetch("/api/user/check-document", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${user?.accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ [numberType]: numberValue }),
+        });
+
+        if (!response.ok) return;
+
+        const data = await response.json();
+        const newErrors = { ...errors };
+
+        if (data.status === 200 && data.data) {
+          newErrors[
+            numberType
+          ] = `This ${label} is already known to us. Try another one or log in to the existing account.`;
+          setIsErrors(true);
+        } else {
+          newErrors[numberType] = "";
+        }
+
+        errors = newErrors;
+      } catch (error) {
+        console.error("Error fetching document:", error);
+        setIsErrors(true);
+      }
+    };
+
+    const validateFields = async () => {
+      if (formik.values.vatNumber) {
+        await validationVAT(formik.values.vatNumber);
+        if (errors.vatNumber) return;
+        await fetchDocument("VAT Number", "vatNumber", formik.values.vatNumber);
+      }
+
+      if (formik.values.eoriNumber) {
+        await checkEORI(formik.values.eoriNumber);
+        if (errors.eoriNumber) return;
+        await fetchDocument(
+          "EORI Number",
+          "eoriNumber",
+          formik.values.eoriNumber,
+        );
+      }
+
+      if (formik.values.kboNumber) {
+        await checkKvkNumber(formik.values.kboNumber);
+        if (errors.kboNumber) return;
+        await fetchDocument(
+          "Commerce Number / KBO Number",
+          "kboNumber",
+          formik.values.kboNumber,
+        );
+      }
+    };
+
+    validateFields().then(() => {
+      formik.setErrors(errors);
+    });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formik.values]);
+
+  useEffect(() => {
+    if (
+      formik.errors.vatNumber ||
+      formik.errors.eoriNumber ||
+      formik.errors.kboNumber
+    ) {
+      setIsErrors(true);
+    } else {
+      setIsErrors(false);
+    }
+  }, [formik.errors]);
 
   return (
     <>
@@ -174,7 +352,7 @@ const Home = () => {
       {user?.acceptedDate === null && user?.role !== "ADMIN" ? (
         <div className="flex justify-center items-center w-full h-full">
           <form
-            onSubmit={formik.handleSubmit}
+            onSubmit={handleSubmit}
             className="flex justify-center items-center flex-col gap-4 p-4 rounded-3xl border border-neutral-100 shadow w-full md:w-1/2"
           >
             <h1 className="text-3xl font-semibold w-full mb-4">
@@ -213,6 +391,16 @@ const Home = () => {
               }}
               error={formik.errors.kboNumber}
             />
+            {naam && (
+              <div className="w-full rounded-xl p-4 border border-neutral-300 flex flex-col gap-2.5">
+                <p className="text-xl font-semibold">{naam}</p>
+                <p>Chamber of Commerce Number {formik.values.kboNumber}</p>
+                <p className="text-sm text-neutral-500">
+                  We found your company name. If this is correct, please upload
+                  your Commerce Number.
+                </p>
+              </div>
+            )}
             <div className="w-full flex flex-col justify-start items-start gap-2">
               <label htmlFor={"upload"} className={`block text-sm font-medium`}>
                 Upload Commerce Number
@@ -234,10 +422,13 @@ const Home = () => {
               )}
             </div>
             <Button
-              className="w-full"
+              className={`w-full ${
+                isErrors ? "cursor-not-allowed bg-neutral-500" : ""
+              }`}
               type="submit"
               ariaLabel="Finish Setup"
               style="primary"
+              disabled={isErrors}
             >
               Finish Setup
             </Button>

@@ -102,4 +102,7 @@ export const userService = {
   checkDocument: async (document: any) => {
     return await userRepo.checkDocument(document);
   },
+  completeData: async (userId: number, data: any) => {
+    return await userRepo.completeData(userId, data);
+  },
 };

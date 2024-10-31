@@ -58,6 +58,10 @@ export const userRepo = {
   updateUser: async (userId: number, userData: any) => {
     // Update user
     try {
+      if (userData.remember !== undefined) {
+        userData.remember = Boolean(userData.remember);
+      }
+
       return await prisma.user.update({
         where: {
           id: userId,
@@ -219,6 +223,32 @@ export const userRepo = {
         where: whereClause,
       });
     } catch (error) {
+      throw new Error("Something went wrong");
+    }
+  },
+  completeData: async (userId: number, data: any) => {
+    try {
+      await prisma.companyProfile.create({
+        data: {
+          user: {
+            connect: {
+              id: userId,
+            },
+          },
+          ...data,
+        },
+      });
+
+      return await prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          acceptedDate: new Date(),
+        },
+      });
+    } catch (error) {
+      console.log(error);
       throw new Error("Something went wrong");
     }
   },

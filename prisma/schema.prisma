@@ -31,15 +31,35 @@ model User {
   accounts      Account[]
   password      String
   remember      Boolean @default(false)
-  vatNumber     String? @unique
-  eoriNumber    String? @unique
-  kboNumber     String? @unique
-  kboFile       String?
+  companyProfile  CompanyProfile?
  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("users")
+}
+
+model CompanyProfile{
+  id            Int          @id @default(autoincrement())
+  userId                   Int  @unique
+  user                     User?   @relation(fields: [userId], references: [id])
+  vatNumber     String @unique
+  eoriNumber    String @unique
+  kboNumber     String @unique
+  kboFile       String
+  address       String?
+  city          String?
+  country       String?
+  zip_code      String?
+  number        String?
+  countryCode   String?
+  street        String?
+  naam          String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+
+  @@map("company_profile")
 }
  
 model Account {
