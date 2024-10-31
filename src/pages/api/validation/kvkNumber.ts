@@ -26,8 +26,6 @@ export default async function handler(
 
     const response = await validation.json();
 
-    console.log(response);
-
     if (response[0].link) {
       const kvkData = await fetch(
         `https://api.overheid.io${response[0].link}`,
