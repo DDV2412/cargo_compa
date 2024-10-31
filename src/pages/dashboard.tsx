@@ -26,9 +26,12 @@ const Home = () => {
     (state: { user: { user: UserPayload } }) => state.user,
   );
   const [isErrors, setIsErrors] = React.useState(false);
+  const [isVatValid, setIsVatValid] = React.useState(false);
+  const [isEoriValid, setIsEoriValid] = React.useState(false);
 
   const formik = useFormik({
     initialValues: {
+      name: "",
       vatNumber: "",
       eoriNumber: "",
       kboNumber: "",
@@ -166,12 +169,13 @@ const Home = () => {
 
     const validationVAT = async (numberValue: string) => {
       try {
-        const response = await fetch(
-          `https://controleerbtwnummer.eu/api/validate/${numberValue}.json`,
-          {
-            method: "GET",
+        const response = await fetch(`/api/validation/vatNumber`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
           },
-        );
+          body: JSON.stringify({ numberValue }),
+        });
 
         if (!response.ok) {
           errors.vatNumber = "This VAT Number is not valid.";
@@ -180,18 +184,22 @@ const Home = () => {
 
         const data = await response.json();
 
-        if (data.valid) {
-          formik.setFieldValue("countryCode", data.countryCode);
-          formik.setFieldValue("address", data.strAddress);
-          formik.setFieldValue("city", data.address.city);
-          formik.setFieldValue("country", data.address.country);
-          formik.setFieldValue("zip_code", data.address.zip_code);
-          formik.setFieldValue("number", data.address.number);
-          formik.setFieldValue("street", data.address.street);
+        if (data.data.valid) {
+          formik.setFieldValue("name", data.data.name);
+          formik.setFieldValue("countryCode", data.data.countryCode);
+          formik.setFieldValue("address", data.data.strAddress);
+          formik.setFieldValue("city", data.data.address.city);
+          formik.setFieldValue("country", data.data.address.country);
+          formik.setFieldValue("zip_code", data.data.address.zip_code);
+          formik.setFieldValue("number", data.data.address.number);
+          formik.setFieldValue("street", data.data.address.street);
           errors.vatNumber = "";
+
+          setIsVatValid(true);
         } else {
           errors.vatNumber = "This VAT Number is not valid.";
           setIsErrors(true);
+          setIsVatValid(false);
         }
       } catch (error) {
         console.error("Error validating VAT:", error);
@@ -218,9 +226,11 @@ const Home = () => {
 
           if (isValid) {
             errors.eoriNumber = "";
+            setIsEoriValid(true);
           } else {
             errors.eoriNumber = "This EORI Number is not valid.";
             setIsErrors(true);
+            setIsEoriValid(false);
           }
         } else {
           errors.eoriNumber = "This EORI Number is not valid.";
@@ -369,6 +379,15 @@ const Home = () => {
               }}
               error={formik.errors.vatNumber}
             />
+            {isVatValid && (
+              <div className="w-full rounded-xl p-4 border border-green-300 bg-green-100 flex flex-col gap-2.5">
+                <p className="text-xl font-semibold">{formik.values.name}</p>
+                <p>VAT Number {formik.values.vatNumber}</p>
+                <p className="text-sm text-neutral-500">
+                  {formik.values.address}, {formik.values.city},{" "}
+                </p>
+              </div>
+            )}
             <TextField
               ariaLabel={"EORI Number"}
               label="EORI Number"
@@ -380,6 +399,12 @@ const Home = () => {
               }}
               error={formik.errors.eoriNumber}
             />
+            {isEoriValid && (
+              <div className="w-full rounded-xl p-4 border border-green-300 bg-green-100 flex flex-col gap-2.5">
+                <p className="text-xl font-semibold">EORI Number is Valid</p>
+                <p>EORI Number {formik.values.eoriNumber}</p>
+              </div>
+            )}
             <TextField
               ariaLabel={"Commerce Number / KBO Number"}
               label="Commerce Number / KBO Number"
@@ -392,7 +417,7 @@ const Home = () => {
               error={formik.errors.kboNumber}
             />
             {naam && (
-              <div className="w-full rounded-xl p-4 border border-neutral-300 flex flex-col gap-2.5">
+              <div className="w-full rounded-xl p-4 border border-green-300 bg-green-100 flex flex-col gap-2.5">
                 <p className="text-xl font-semibold">{naam}</p>
                 <p>Chamber of Commerce Number {formik.values.kboNumber}</p>
                 <p className="text-sm text-neutral-500">

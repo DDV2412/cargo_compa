@@ -23,6 +23,7 @@ CREATE TABLE "users" (
 -- CreateTable
 CREATE TABLE "company_profile" (
     "id" SERIAL NOT NULL,
+    "name" TEXT,
     "userId" INTEGER NOT NULL,
     "vatNumber" TEXT NOT NULL,
     "eoriNumber" TEXT NOT NULL,
