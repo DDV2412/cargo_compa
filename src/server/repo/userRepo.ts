@@ -219,7 +219,7 @@ export const userRepo = {
         }
       }
 
-      return await prisma.user.findFirst({
+      return await prisma.companyProfile.findFirst({
         where: whereClause,
       });
     } catch (error) {
