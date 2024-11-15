@@ -145,25 +145,6 @@ const Home = () => {
     },
   ];
 
-  const validateEoriNumber = (eoriNumber: string) => {
-    const upperChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    if (!eoriNumber) {
-      return false;
-    }
-    if (eoriNumber.includes(" ")) {
-      return false;
-    }
-    if (
-      eoriNumber.length < 3 ||
-      eoriNumber.length > 17 ||
-      !upperChars.includes(eoriNumber.charAt(0)) ||
-      !upperChars.includes(eoriNumber.charAt(1))
-    ) {
-      return false;
-    }
-    return true;
-  };
-
   useEffect(() => {
     let errors = { ...formik.errors };
 
@@ -204,13 +185,18 @@ const Home = () => {
       } catch (error) {
         console.error("Error validating VAT:", error);
         setIsErrors(true);
+        setIsVatValid(false);
       }
     };
 
     const checkEORI = async (numberValue: string) => {
       try {
         const response = await fetch("/api/validation/eori", {
-          method: "GET",
+          method: "post",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ eori: numberValue }),
         });
 
         if (!response.ok) {
@@ -222,9 +208,9 @@ const Home = () => {
         const data = await response.json();
 
         if (data.status === 200) {
-          const isValid = validateEoriNumber(numberValue);
+          const isValid = data.data.statusDescr;
 
-          if (isValid) {
+          if (isValid === "Valid") {
             errors.eoriNumber = "";
             setIsEoriValid(true);
           } else {
@@ -235,10 +221,12 @@ const Home = () => {
         } else {
           errors.eoriNumber = "This EORI Number is not valid.";
           setIsErrors(true);
+          setIsEoriValid(false);
         }
       } catch (error) {
         console.error("Error validating EORI:", error);
         setIsErrors(true);
+        setIsEoriValid(false);
       }
     };
 
@@ -266,6 +254,7 @@ const Home = () => {
       } catch (error) {
         console.error("Error validating EORI:", error);
         setIsErrors(true);
+        setNaam("");
       }
     };
 

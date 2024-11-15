@@ -34,6 +34,7 @@
     "react-dom": "^18",
     "react-lottie": "^1.2.4",
     "react-redux": "^9.1.2",
+    "strong-soap": "^4.1.6",
     "ts-node": "^10.9.2",
     "yup": "^1.4.0"
   },

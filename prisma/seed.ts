@@ -11,6 +11,7 @@ async function main() {
       password: bcrypt.hashSync("cargoDev@24", 12),
       role: "ADMIN",
       acceptedDate: new Date(),
+      emailVerified: new Date(),
     },
   });
 }
