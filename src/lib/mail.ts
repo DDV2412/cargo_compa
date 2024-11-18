@@ -1,4 +1,6 @@
 import nodemailer from "nodemailer";
+import dotenv from "dotenv";
+dotenv.config();
 
 export const sendMailServer = async (
   options: {
@@ -11,12 +13,12 @@ export const sendMailServer = async (
 ) => {
   try {
     const transporter = nodemailer.createTransport({
-      host: "mail.barkahlabs.com",
-      port: 465,
-      secure: true,
+      host: process.env.MAIL_HOST,
+      port: Number(process.env.MAIL_PORT),
+      secure: process.env.MAIL_SECURE === "true",
       auth: {
-        user: "noval@barkahlabs.com",
-        pass: "9w$wtT9yIn8-",
+        user: process.env.MAIL_USER,
+        pass: process.env.MAIL_PASS,
       },
     });
 
