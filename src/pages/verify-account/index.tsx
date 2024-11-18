@@ -58,7 +58,7 @@ const VerifyNotif = () => {
         <div className="h-full w-full flex flex-col justify-center items-center">
           <div className="flex bg-white flex-col justify-center text-center items-start w-full max-w-xl mx-auto lg:mx-0 rounded-3xl border border-neutral-200 px-8 py-11">
             <Image
-              src="/send-email.svg"
+              src="/images/send-email.svg"
               alt="CargoCompa"
               width={300}
               height={48}
