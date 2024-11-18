@@ -17,6 +17,8 @@
 /build
 .env
 
+src/lib/mail.ts
+
 # misc
 .DS_Store
 *.pem

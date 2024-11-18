@@ -89,16 +89,16 @@ model Account {
 }
  
 model VerificationToken {
+  id            Int          @id @default(autoincrement())
   email String
   token      String @db.Text
   expires    DateTime
  
-  @@unique([email])
-
   @@map("verification_token")
 }
 
 model ResetToken{
+  id            Int          @id @default(autoincrement())
   token      String
   email         String @unique
   expires       DateTime

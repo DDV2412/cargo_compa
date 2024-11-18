@@ -149,6 +149,7 @@ export const userRepo = {
         data: data,
       });
     } catch (error) {
+      console.log(error);
       throw new Error("Something went wrong");
     }
   },
@@ -248,7 +249,6 @@ export const userRepo = {
         },
       });
     } catch (error) {
-      console.log(error);
       throw new Error("Something went wrong");
     }
   },

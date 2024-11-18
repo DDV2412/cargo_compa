@@ -25,6 +25,12 @@ const VerifyNotif = () => {
               user,
             }),
           });
+
+          if (response.ok) {
+            console.log("Email sent");
+          } else {
+            console.error("Failed to send email");
+          }
         } catch (error) {
           console.error(error);
         }
@@ -39,7 +45,7 @@ const VerifyNotif = () => {
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sendMail, session]);
+  }, [session, sendMail]);
 
   return (
     <div className="min-h-screen lg:overflow-hidden">
