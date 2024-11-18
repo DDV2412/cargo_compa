@@ -4,24 +4,13 @@ const soap = require("strong-soap").soap;
 const url =
   "https://ec.europa.eu/taxation_customs/dds2/eos/validation/services/validation?wsdl";
 
-const eoriValidation = async (eori: string) => {
+const eoriValidation = async (eori: string): Promise<any> => {
   return new Promise((resolve, reject) => {
     soap.createClient(url, (err: any, client: any) => {
       if (err) {
         reject(err);
       }
-
-      const args = {
-        eori: eori,
-      };
-
-      client.validateEORI(args, (err: any, result: any) => {
-        if (err) {
-          reject(err);
-        }
-
-        resolve(result as any);
-      });
+      resolve(client);
     });
   });
 };
@@ -40,13 +29,26 @@ export default async function handler(
   try {
     const body = req.body;
 
-    const result = await eoriValidation(body.eori as string);
+    const client = await eoriValidation(body.eori as string);
 
-    const firstResult = (result as any).return.result[0];
+    const args = {
+      eori: body.eori as string,
+    };
 
-    return res.json({
-      status: 200,
-      data: firstResult,
+    client.validateEORI(args, (err: any, result: any) => {
+      if (err) {
+        return res.json({
+          status: 500,
+          message: err.message,
+        });
+      }
+
+      const firstResult = (result as any).return.result[0];
+
+      return res.json({
+        status: 200,
+        data: firstResult,
+      });
     });
   } catch (error: any) {
     return res.json({

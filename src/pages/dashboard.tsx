@@ -104,7 +104,7 @@ const Home = () => {
 
         formik.setFieldValue(
           "kboFile",
-          `${process.env.NEXTAUTH_URL}${data.data.path}`,
+          `${process.env.NEXTAUTH_URL}${data.file.path}`,
         );
       }
     } catch (error: any) {
