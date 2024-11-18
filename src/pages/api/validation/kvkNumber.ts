@@ -15,40 +15,21 @@ export default async function handler(
     const body = req.body;
 
     const validation = await fetch(
-      `https://api.overheid.io/v3/suggest/openkvk/${body.kvkNumber}`,
+      `https://api.kvk.nl/test/api/v1/basisprofielen/${body.kvkNumber}`,
       {
         method: "GET",
         headers: {
-          "ovio-api-key": `${process.env.KVK_API_KEY}`,
+          apiKey: "l7xx1f2691f2520d487b902f4e0b57a0b197",
         },
       },
     );
 
     const response = await validation.json();
 
-    if (response[0].link) {
-      const kvkData = await fetch(
-        `https://api.overheid.io${response[0].link}`,
-        {
-          method: "GET",
-          headers: {
-            "ovio-api-key": `${process.env.KVK_API_KEY}`,
-          },
-        },
-      );
-
-      const kvkResponse = await kvkData.json();
-
-      return res.json({
-        status: 200,
-        data: kvkResponse,
-      });
-    } else {
-      return res.json({
-        status: 404,
-        message: "KVK number not found",
-      });
-    }
+    return res.json({
+      status: 200,
+      message: response,
+    });
   } catch (error: any) {
     return res.json({
       status: 500,

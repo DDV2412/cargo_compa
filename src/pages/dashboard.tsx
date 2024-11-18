@@ -244,8 +244,8 @@ const Home = () => {
 
         if (data.status === 200) {
           errors.kboNumber = "";
-          setNaam(data.data.naam);
-          formik.setFieldValue("naam", data.data.naam);
+          setNaam(data.message.naam);
+          formik.setFieldValue("naam", data.message.naam);
         } else {
           errors.kboNumber = "This KBO Number is not valid.";
           setIsErrors(true);
