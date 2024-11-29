@@ -15,11 +15,11 @@ export default async function handler(
     const body = req.body;
 
     const validation = await fetch(
-      `https://api.kvk.nl/test/api/v1/basisprofielen/${body.kvkNumber}`,
+      `https://api.kvk.nl/api/v1/basisprofielen/${body.kvkNumber}`,
       {
         method: "GET",
         headers: {
-          apiKey: "l7xx1f2691f2520d487b902f4e0b57a0b197",
+          apiKey: process.env.KVK_API_KEY as string,
         },
       },
     );
