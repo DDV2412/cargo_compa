@@ -11,6 +11,7 @@ import {
 import { useFormik } from "formik";
 import dynamic from "next/dynamic";
 import Head from "next/head";
+import Link from "next/link";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 const Loading = dynamic(() => import("../components/loading"));
@@ -89,9 +90,11 @@ const Home = () => {
     try {
       const file = event.target.files?.[0];
       const formData = new FormData();
-      formData.append("file", file as Blob);
+      formData.append("signature", file as Blob);
+      formData.append("kvk", formik.values.kboNumber);
+      formData.append("eori", formik.values.eoriNumber);
 
-      const response = await fetch("/api/upload-document", {
+      const response = await fetch("/api/generate-pdf", {
         method: "POST",
         headers: {
           authorization: `Bearer ${user?.accessToken}`,
@@ -99,14 +102,14 @@ const Home = () => {
         body: formData,
       });
 
-      if (response.ok) {
-        const data = await response.json();
-
-        formik.setFieldValue(
-          "kboFile",
-          `${process.env.NEXTAUTH_URL}${data.file.path}`,
-        );
+      if (!response.ok) {
+        formik.setFieldError("kboFile", "Error uploading file.");
+        return;
       }
+
+      const data = await response.json();
+
+      formik.setFieldValue("kboFile", data.file.path);
     } catch (error: any) {
       console.error(error.message || "Something went wrong!");
     }
@@ -424,15 +427,29 @@ const Home = () => {
                 id="upload"
                 onChange={handleUploadFile}
                 name="upload"
-                accept=".pdf"
+                accept="image/png"
                 className={`block w-full shadow-sm sm:text-sm rounded-lg min-h-12 bg-transparent border focus:outline-none px-4 py-2.5 border-neutral-300 text-neutral-900 dark:text-white placeholder-text-neutral-500 focus:border-blue-500`}
                 placeholder="Upload Commerce Number"
                 aria-label="Upload Commerce Number"
+                disabled={!naam || !isEoriValid}
               />
               {formik.errors.kboFile && (
                 <p className={`text-xs pl-4 text-red-500`} id="email-error">
                   {formik.errors.kboFile}
                 </p>
+              )}
+              {formik.values.kboFile && (
+                <div className="w-full rounded-xl p-4 border border-green-300 bg-green-100 flex flex-col gap-2.5">
+                  <p className="text-xl font-semibold">Generate Contract</p>
+                  <a
+                    href={formik.values.kboFile}
+                    target="_blank"
+                    aria-label="Preview"
+                    className="py-3 px-4 bg-blue-500 text-white rounded-lg text-center"
+                  >
+                    Preview
+                  </a>
+                </div>
               )}
             </div>
             <Button
