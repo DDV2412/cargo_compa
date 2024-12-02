@@ -22,13 +22,13 @@ const nextConfig = {
         protocol: "http",
         hostname: "cargo.barkahlabs.com",
         port: "3000",
-        pathname: "/images/**",
+        pathname: "/api/images/**",
       },
       {
         protocol: "https",
         hostname: "www.cargo.barkahlabs.com",
         port: "3000",
-        pathname: "/images/**",
+        pathname: "/api/images/**",
       },
       {
         protocol: "http",
