@@ -20,6 +20,18 @@ const nextConfig = {
       },
       {
         protocol: "http",
+        hostname: "cargo.barkahlabs.com",
+        port: "3000",
+        pathname: "/images/**",
+      },
+      {
+        protocol: "https",
+        hostname: "www.cargo.barkahlabs.com",
+        port: "3000",
+        pathname: "/images/**",
+      },
+      {
+        protocol: "http",
         hostname: "localhost",
         port: "3000",
         pathname: "/api/images/**",
